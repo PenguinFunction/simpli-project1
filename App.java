@@ -143,7 +143,8 @@ public class App {
                             break;
                         }
                         case 3: {
-                            System.out.println("Searching for file");
+                            sc.nextLine();
+                            System.out.println(searchForFile(sc));
                             break;
                         }
                         case 4: {
@@ -245,6 +246,49 @@ public class App {
                 System.out.println("Error: Could not delete file");
             }
         } while (isDeletingFile != false);
+    }
+
+    /**
+     * Helper function that searches a file from the directory
+     * 
+     * @param sc Scanner object
+     * @return Whether file was found as a String
+     */
+    private static String searchForFile(Scanner sc) {
+        String result = "";
+
+        boolean isSearching = true;
+        do {
+            try {
+                System.out.print("\nWhat file are you looking for?: ");
+                String filename = sc.nextLine().trim();
+
+                if (!isValidFileName(filename)) {
+                    System.out.println("Invalid file name, please try another name.");
+                } else {
+                    ArrayList<String> filesList = new ArrayList<String>();
+
+                    // Get all files in the directory
+                    File[] files = new File(DIRECTORY).listFiles();
+
+                    for (File file : files) {
+                        filesList.add(file.getName());
+                    }
+
+                    // Sort file names alphabetically
+                    Collections.sort(filesList);
+
+                    // Search for file
+                    int index = Collections.binarySearch(filesList, filename);
+                    result = (index >= 0) ? filename + " found in " + DIRECTORY
+                            : "Could not find " + filename + " in " + DIRECTORY;
+                    isSearching = false;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: Could not find file");
+            }
+        } while (isSearching != false);
+        return result;
     }
 
     /**
