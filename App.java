@@ -1,7 +1,12 @@
 import java.util.Scanner;
-import java.io.File;
-import java.util.Arrays;
+
 import java.util.HashMap;
+import java.util.Arrays;
+
+import java.io.File;
+import java.util.regex.Pattern;
+
+import java.io.IOException;
 import java.util.InputMismatchException;
 
 public class App {
@@ -127,7 +132,8 @@ public class App {
                 } else {
                     switch (userOption) {
                         case 1: {
-                            System.out.println("Adding file");
+                            sc.nextLine();
+                            addFile(sc);
                             break;
                         }
                         case 2: {
@@ -155,5 +161,47 @@ public class App {
                 System.out.println("Error: " + e);
             }
         } while (isInFileMenu != false);
+    }
+
+    /**
+     * Helper function that adds a file to the directory
+     * 
+     * @param sc
+     */
+    private static void addFile(Scanner sc) {
+        boolean isAddingFile = true;
+        do {
+            try {
+                System.out.print("\nEnter a name for a new file: ");
+                String filename = sc.nextLine().trim();
+
+                // Check if file can be created
+                if (!isValidFileName(filename)) {
+                    System.out.println("Invalid file name, please try another name.");
+                } else {
+                    // Create and add new file to directory
+                    File newFile = new File(DIRECTORY + "\\" + filename);
+                    if (newFile.createNewFile()) {
+                        System.out.println("Created " + filename + " in " + DIRECTORY);
+                        isAddingFile = false;
+                    } else {
+                        System.out.println("This file already exists, please try another name.");
+                    }
+                }
+            } catch (IOException IOe) {
+                System.out.println("Error: Could not create file");
+            }
+        } while (isAddingFile != false);
+    }
+
+    /**
+     * Helper function to check the validity of file names
+     * 
+     * @param filename Name of file
+     * @return True if filename is valid
+     */
+    private static boolean isValidFileName(String fileName) {
+        String regex = "^(?!^(PRN|AUX|CLOCK\\$|NUL|CON|COM\\d|LPT\\d)(?:\\..*)?$)[^<>:\"/\\\\|?*\\x00-\\x1F]+$";
+        return Pattern.matches(regex, fileName);
     }
 }
