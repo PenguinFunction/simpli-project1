@@ -1,4 +1,6 @@
 import java.util.Scanner;
+import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 
@@ -45,8 +47,16 @@ public class App {
                     switch (userOption) {
                         case 1: {
                             // List all files in directory
-                            System.out.println("Contents of " + DIRECTORY);
+                            System.out.println("Contents of " + DIRECTORY + "\n");
+                            File[] files = new File(DIRECTORY).listFiles();
+                            Arrays.sort(files);
 
+                            for (int i = 0; i < files.length; i++) {
+                                if (files[i].isDirectory()) {
+                                    System.out.print("<DIR>");
+                                }
+                                System.out.print("\t" + files[i].getName() + "\n");
+                            }
                             break;
                         }
                         case 2: {
