@@ -249,7 +249,7 @@ public class App {
     }
 
     /**
-     * Helper function that searches a file from the directory
+     * Helper function that searches for a file from the directory
      * 
      * @param sc Scanner object
      * @return Whether file was found as a String
