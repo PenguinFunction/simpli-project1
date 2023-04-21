@@ -1,9 +1,10 @@
 import java.util.Scanner;
+import java.io.File;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Arrays;
-
-import java.io.File;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 import java.io.IOException;
@@ -137,7 +138,8 @@ public class App {
                             break;
                         }
                         case 2: {
-                            System.out.println("Deleting file");
+                            sc.nextLine();
+                            deleteFile(sc);
                             break;
                         }
                         case 3: {
@@ -166,7 +168,7 @@ public class App {
     /**
      * Helper function that adds a file to the directory
      * 
-     * @param sc
+     * @param sc Scanner object
      */
     private static void addFile(Scanner sc) {
         boolean isAddingFile = true;
@@ -192,6 +194,57 @@ public class App {
                 System.out.println("Error: Could not create file");
             }
         } while (isAddingFile != false);
+    }
+
+    /**
+     * Helper function that deletes a file from the directory
+     * 
+     * @param sc Scanner object
+     */
+    private static void deleteFile(Scanner sc) {
+        boolean isDeletingFile = true;
+        do {
+            try {
+                System.out.print("\nWhich file do you want to delete?: ");
+                String filename = sc.nextLine().trim();
+
+                if (!isValidFileName(filename)) {
+                    System.out.println("Invalid file name, please try another name.");
+                } else {
+                    ArrayList<String> filesList = new ArrayList<String>();
+
+                    // Get all files in the directory
+                    File[] files = new File(DIRECTORY).listFiles();
+
+                    for (File file : files) {
+                        filesList.add(file.getName());
+                    }
+
+                    // Sort file names alphabetically
+                    Collections.sort(filesList);
+
+                    // Search for file to be deleted
+                    int index = Collections.binarySearch(filesList, filename);
+
+                    if (index >= 0) {
+                        File fileToDelete = new File(DIRECTORY + "\\" + filename);
+
+                        if (fileToDelete.delete()) {
+                            System.out.println("Successfully deleted " + filename + " from " + DIRECTORY);
+                        } else {
+                            System.out.println("Error: Could not delete file");
+                        }
+
+                        isDeletingFile = false;
+                    } else {
+                        System.out.println("Could not find " + filename);
+                        isDeletingFile = false;
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Error: Could not delete file");
+            }
+        } while (isDeletingFile != false);
     }
 
     /**
